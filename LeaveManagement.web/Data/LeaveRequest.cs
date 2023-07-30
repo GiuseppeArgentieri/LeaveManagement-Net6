@@ -15,10 +15,10 @@ namespace LeaveManagement.web.Data
 
         public DateTime DateRequested { get; set; }
         //employees requests and admins approvee
-        public string RequestComments { get; set; }
+        public string? RequestComments { get; set; }
         public bool? Approved { get; set; }
         //when it is null it's in a pending state
         public bool Cancelled { get; set; }
-        public int RequestingEmployeeId { get; set; }
+        public string RequestingEmployeeId { get; set; }
     }
 }
