@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeaveManagement.web.Constants;
 using LeaveManagement.web.Contracts;
 using LeaveManagement.web.Data;
@@ -14,18 +15,21 @@ namespace LeaveManagement.web.Repositories
         private readonly ApplicationDbContext context;
         private readonly UserManager<Employee> userManager;
         private readonly ILeaveTypeRepository leaveTypeRepository;
-		private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly IMapper mapper;
 
 		public LeaveAllocationRepository(
                 ApplicationDbContext context,
                 UserManager<Employee> userManager, 
                 ILeaveTypeRepository leaveTypeRepository,
+                AutoMapper.IConfigurationProvider configurationProvider,
 				IMapper mapper) : base(context)
         {
             this.context = context;
             this.userManager = userManager;
             this.leaveTypeRepository = leaveTypeRepository;
-			this.mapper = mapper;
+            this.configurationProvider = configurationProvider;
+            this.mapper = mapper;
 		}
 
         public async Task<bool> AllocationeExists(string employeeId, int leaveTypeId, int period)
@@ -39,11 +43,13 @@ namespace LeaveManagement.web.Repositories
 		{
             var allocations = await context.LeaveAllocations
                 .Include(q => q.LeaveType)
-                .Where(q => q.EmployeeId == EmployeeId).ToListAsync();
+                .Where(q => q.EmployeeId == EmployeeId)
+                .ProjectTo<LeaveAllocationVM>(configurationProvider)
+                .ToListAsync();
             
             var employee = await userManager.FindByIdAsync(EmployeeId);
             var employeeAllocationModel = mapper.Map<EmployeeAllocationVM>(employee);
-            employeeAllocationModel.LeaveAllocations = mapper.Map<List<LeaveAllocationVM>>(allocations);
+            employeeAllocationModel.LeaveAllocations = allocations;
 			
             return employeeAllocationModel;
 		}
