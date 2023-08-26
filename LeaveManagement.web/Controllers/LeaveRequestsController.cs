@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagement.web.Data;
+using LeaveManagement.Data;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using LeaveManagement.web.Models;
+using LeaveManagement.Common.Models;
 using AutoMapper;
-using LeaveManagement.web.Contracts;
-using LeaveManagement.web.Repositories;
+using LeaveManagement.Application.Contracts;
+using LeaveManagement.Application.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using LeaveManagement.web.Constants;
+using LeaveManagement.Common.Constants;
 
 namespace LeaveManagement.web.Controllers
 {
@@ -21,11 +21,13 @@ namespace LeaveManagement.web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILeaveRequestRepository leaveRepository;
+        private readonly ILogger<LeaveRequestsController> logger;
 
-        public LeaveRequestsController(ApplicationDbContext context, ILeaveRequestRepository leaveRepository)
+        public LeaveRequestsController(ApplicationDbContext context, ILeaveRequestRepository leaveRepository, ILogger<LeaveRequestsController> logger)
         {
             _context = context;
             this.leaveRepository = leaveRepository;
+            this.logger = logger;
         }
 
         // GET: LeaveRequests
@@ -63,6 +65,7 @@ namespace LeaveManagement.web.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Error Approving Leave Request");
                 throw;
             }
             return RedirectToAction(nameof(Index));
@@ -102,6 +105,7 @@ namespace LeaveManagement.web.Controllers
             }
             catch(Exception ex)
             {
+                logger.LogError(ex, "Error Creating Leave Request");
                 ModelState.AddModelError(string.Empty, "An error has occurred, please try again later");
             }
             //se sei arrivato qui è xké il modelState non è valido
@@ -171,6 +175,7 @@ namespace LeaveManagement.web.Controllers
                 await leaveRepository.CancelLeaveRequest(id);
             }
             catch (Exception ex) {
+                logger.LogError(ex, "Error Canceling Leave Request");
                 throw;
             }
             return RedirectToAction(nameof(MyLeave));

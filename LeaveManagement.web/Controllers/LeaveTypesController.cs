@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagement.web.Data;
+using LeaveManagement.Data;
 using AutoMapper;
-using LeaveManagement.web.Models;
-using LeaveManagement.web.Contracts;
+using LeaveManagement.Common.Models;
+using LeaveManagement.Application.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using LeaveManagement.web.Constants;
+using LeaveManagement.Common.Constants;
+using LeaveManagement.Application.Repositories;
 
 namespace LeaveManagement.web.Controllers
 {
@@ -99,13 +100,18 @@ namespace LeaveManagement.web.Controllers
             {
                 return NotFound();
             }
-
+            var leaveType = await _leaveTypeRepository.GetAsync(id);
+            if (leaveType == null)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 
                 try
                 {
-                    var leaveType = _mapper.Map<LeaveType>(leaveTypeVM);
+                    //dobbiamo fare un merge tra i due perché il VM non ha la data di creazione  e ce la va a sovrascrivere
+                    _mapper.Map(leaveTypeVM, leaveType);
                     await _leaveTypeRepository.UpdateAsync(leaveType);
                 }
                 catch (DbUpdateConcurrencyException)
