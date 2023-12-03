@@ -24,3 +24,4 @@ Learn ASP.NET Core and Entity Framework by building and publishing a practical E
 - Implement Email Services.
 
 
+### it is necessary to install papercut-smtp for the application to work without errors
