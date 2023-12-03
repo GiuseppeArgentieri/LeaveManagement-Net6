@@ -11,8 +11,8 @@ namespace LeaveManagement.Common.Models
         //employees requests and admins approvee
 
         [Display(Name = "Leave Type")]
-        public LeaveTypeVM LeaveType { get; set; }
-
+        public LeaveTypeVM? LeaveType { get; set; }
+        public int LeaveTypeId { get; set; }
         public bool? Approved { get; set; }
         //when it is null it's in a pending state
         public bool Cancelled { get; set; }

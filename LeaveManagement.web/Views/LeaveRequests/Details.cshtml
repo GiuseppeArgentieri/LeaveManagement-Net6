@@ -86,7 +86,14 @@
         </form>
         </div>
         </div>
-    </div>
+        </div>
+    }
+    else
+    {
+        <form method="post">
+            <input value="@Model.Id" name="id" type="hidden" />
+            <button type="submit" class="btn btn-danger" style="width: 200px;" asp-action="Delete">Delete</button>
+        </form>
     }
 
     <hr/>

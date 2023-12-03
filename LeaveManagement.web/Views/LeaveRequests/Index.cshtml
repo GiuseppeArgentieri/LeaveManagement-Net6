@@ -89,7 +89,7 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LeaveType.Id)
+                @Html.DisplayFor(modelItem => item.LeaveType.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateRequested)
@@ -113,11 +113,18 @@
                     }
             </td>
             <td>
-                    @if (item.Cancelled == false)
+                    @if (item.Approved != false && item.Cancelled == false )
                     {
                         <a asp-action="Details" class="btn btn-primary btn-sm" asp-route-id="@item.Id">Review</a>
                     }
-            </td>
+                    else
+                    {
+                        <form method="post">
+                            <input value="@item.Id" name="id" type="hidden" />
+                            <button type="submit" class="btn btn-danger btn-sm" asp-action="Delete">Delete</button>
+                        </form>
+                    }
+                </td>
         </tr>
 }
     </tbody>

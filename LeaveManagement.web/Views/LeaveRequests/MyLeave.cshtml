@@ -1,4 +1,5 @@
-﻿@model EmployeeLeaveRequestViewVM
+﻿@inject ApplicationDbContext dbc
+@model EmployeeLeaveRequestViewVM
 @{
     ViewData["Title"] = "My Leave";
 }
@@ -19,10 +20,10 @@
         {
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col"><h6>@allocation.LeaveType.Name</h6></div>
+                    <div class="col"><h6>@allocation.LeaveType?.Name</h6></div>
                     <div class="col">
                         <button type="button" class="btn btn-primary">
-                            Allocated Days <span class="badge bg-secondary">@allocation.LeaveType.DefaultDays</span>
+                            Allocated Days <span class="badge bg-secondary">@allocation.LeaveType?.DefaultDays</span>
                         </button>
                     </div>
                     <div class="col">
@@ -71,7 +72,7 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LeaveType.Name)
+                    @Html.DisplayFor(modelItem => dbc.LeaveTypes.FirstOrDefault(q => q.Id == item.LeaveTypeId).Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DateRequested)
@@ -98,8 +99,8 @@
                 <td>
                     @if(item.Approved == null)
                     {
-                        <form>
-                            <input asp-form="@item.Id" type="hidden" />
+                        <form method="post">
+                            <input value="@item.Id" name="id" type="hidden" />
                             <button type="submit" class="btn btn-danger btn-sm" asp-action="Cancel">Cancel Request</button>
                         </form>
                     }

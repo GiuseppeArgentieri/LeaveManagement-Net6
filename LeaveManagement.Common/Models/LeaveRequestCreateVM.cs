@@ -17,10 +17,15 @@ namespace LeaveManagement.Common.Models
         [DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
 
+        
         [Required]
         [Display(Name = "Leave Type")]
         public int LeaveTypeId { get; set; }
         public SelectList? Leavetypes { get; set; }
+        
+        
+        //public string Name { get; set; }
+        //public LeaveTypeVM LeaveType { get; set; }
 
 
         //employees requests and admins approvee
